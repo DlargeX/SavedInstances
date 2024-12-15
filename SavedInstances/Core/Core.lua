@@ -180,6 +180,7 @@ SI.defaultDB = {
   -- Arena3v3rating: integer
   -- RBGrating: integer
   -- SoloShuffleRating: table
+  -- BGBRating: table
   -- SpecializationIDs: table
 
   -- currency: key: currencyID  value:
@@ -1330,10 +1331,17 @@ function SI:UpdateToonData()
       local donetoday, money = GetLFGDungeonRewards(id)
       if
         donetoday
-        and i.Random
         and (
-          id == 301 -- Cata heroic
-          or id == 434 -- Hour of Twilight
+          id == 301 -- Random Cataclysm Heroic
+          or id == 434 -- Random Hour of Twilight Heroic
+          or id == 744 -- Random Timewalking Dungeon (Burning Crusade)
+          or id == 995 -- Random Timewalking Dungeon (Wrath of the Lich King)
+          or id == 1146 -- Random Timewalking Dungeon (Cataclysm)
+          or id == 1453 -- Random Timewalking Dungeon (Mists of Pandaria)
+          or id == 1971 -- Random Timewalking Dungeon (Warlords of Draenor)
+          or id == 2274 -- Random Timewalking Dungeon (Legion)
+          or id == 2634 -- Random Timewalking Dungeon (Classic)
+          or id == 2714 -- The Codex of Chromie
         )
       then -- donetoday flag is falsely set for some level/dungeon combos where no daily incentive is available
         donetoday = false
@@ -1413,6 +1421,12 @@ function SI:UpdateToonData()
   if currentSpecID then
     t.SoloShuffleRating[currentSpecID] = GetPersonalRatedInfo(7) or t.SoloShuffleRating[currentSpecID]
   end
+
+  t.BGBRating = t.BGBRating or {}
+  if currentSpecID then
+    t.BGBRating[currentSpecID] = GetPersonalRatedInfo(9) or t.BGBRating[currentSpecID]
+  end
+
   TradeSkill:ScanItemCDs()
   -- Daily Reset
   if nextreset and nextreset > time() then
@@ -1727,6 +1741,14 @@ hoverTooltip.ShowToonTooltip = function(cell, arg, ...)
       if t.SoloShuffleRating[i] and t.SoloShuffleRating[i] > 0 then
         local _, specName = GetSpecializationInfoForSpecID(specID)
         indicatortip:AddLine(PVP_RATED_SOLO_SHUFFLE .. " " .. RATING .. ": " .. specName, t.SoloShuffleRating[i])
+      end
+    end
+  end
+  if t.BGBRating and t.SpecializationIDs then
+    for i, specID in ipairs(t.SpecializationIDs) do
+      if t.BGBRating[i] and t.BGBRating[i] > 0 then
+        local _, specName = GetSpecializationInfoForSpecID(specID)
+        indicatortip:AddLine(PVP_RATED_BG_BLITZ .. " " .. RATING .. ": " .. specName, t.BGBRating[i])
       end
     end
   end
