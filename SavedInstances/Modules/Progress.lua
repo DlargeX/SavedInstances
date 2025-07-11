@@ -246,6 +246,7 @@ local presets = {
       83364, -- A Savage Path Through Time - WOD Timewalking
       83360, -- A Fel Path Through Time - LEG Timewalking
       86731, -- An Original Path Through Time - CLA Timewalking
+      88805, -- A Scarred Path Through Time - BFA Timewalking
     },
     reset = "weekly",
     persists = false,
@@ -1036,7 +1037,9 @@ local presets = {
     name = L["Special Assignments"],
     questID = {
       82355, -- Special Assignment: Cinderbee Surge (Completing)
+      81647, -- Special Assignment: Titanic Resurgence (Completing)
       81649, -- Special Assignment: Titanic Resurgence (Completing)
+      81650, -- Special Assignment: Titanic Resurgence (Completing)
       81691, -- Special Assignment: Shadows Below (Completing)
       83229, -- Special Assignment: When the Deeps Stir (Completing)
       82852, -- Special Assignment: Lynx Rescue (Completing)

@@ -1311,6 +1311,7 @@ function SI:UpdateToonData()
           or id == 1971 -- Random Timewalking Dungeon (Warlords of Draenor)
           or id == 2274 -- Random Timewalking Dungeon (Legion)
           or id == 2634 -- Random Timewalking Dungeon (Classic)
+          or id == 2874 -- Random Timewalking Dungeon (Battle for Azeroth)
           or id == 2714 -- The Codex of Chromie
         )
       then -- donetoday flag is falsely set for some level/dungeon combos where no daily incentive is available
@@ -2911,6 +2912,9 @@ SI.histLimit = 10 -- instances per hour
 function SI:histZoneKey()
   local instname, insttype, diff, diffname, maxPlayers, playerDifficulty, isDynamicInstance = GetInstanceInfo()
   if insttype == nil or insttype == "none" or insttype == "arena" or insttype == "pvp" then -- pvp doesnt count
+    return nil
+  end
+  if diff == 208 then -- delves dont count
     return nil
   end
   if (IsInLFGDungeon() or IsInScenarioGroup()) and diff ~= 19 and diff ~= 17 then -- LFG instances don't count, but Holiday Events and LFR both count
