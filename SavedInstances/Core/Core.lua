@@ -169,6 +169,7 @@ SI.defaultDB = {
   -- Artifact: string REMOVED
   -- Cloak: string REMOVED
   -- Covenant: number
+  -- GUID: string
   -- MythicPlusScore: number
   -- Paragon: table
   -- oRace: string
@@ -394,6 +395,7 @@ SI.defaultDB = {
     Currency3288 = true, -- Runed Ethereal Crest
     Currency3290 = true, -- Gilded Ethereal Crest
     Currency3141 = true, -- Starlight Spark Dust
+    Currency3319 = true, -- Twilight's Blade Insignia
     CurrencyMax = false,
     CurrencyEarned = true,
     CurrencySortName = false,
@@ -1383,11 +1385,11 @@ function SI:UpdateToonData()
 
   t.SpecializationIDs = t.SpecializationIDs or {}
   for i = 1, GetNumSpecializations() do
-    t.SpecializationIDs[i] = GetSpecializationInfo(i) or t.SpecializationIDs[i]
+    t.SpecializationIDs[i] = C_SpecializationInfo.GetSpecializationInfo(i) or t.SpecializationIDs[i]
   end
   -- Solo Shuffle rating is unique to each specialization
   t.SoloShuffleRating = t.SoloShuffleRating or {}
-  local currentSpecID = GetSpecialization()
+  local currentSpecID = C_SpecializationInfo.GetSpecialization()
   if currentSpecID then
     t.SoloShuffleRating[currentSpecID] = GetPersonalRatedInfo(7) or t.SoloShuffleRating[currentSpecID]
   end
@@ -1540,6 +1542,7 @@ function SI:UpdateToonData()
     t.Warmode = C_PvP.IsWarModeDesired()
     t.Covenant = C_Covenants.GetActiveCovenantID()
     t.MythicPlusScore = C_ChallengeMode.GetOverallDungeonScore()
+    t.GUID = SI.playerGUID
   end
 
   t.LastSeen = time()
@@ -1740,9 +1743,7 @@ hoverTooltip.ShowToonTooltip = function(cell, arg, ...)
     local when = date("%c", t.LastSeen)
     indicatortip:AddLine(L["Last updated"], when)
   end
-  if SI.db.Tooltip.TrackPlayed and t.PlayedTotal and t.PlayedLevel and ChatFrame_TimeBreakDown then
-    --indicatortip:AddLine((TIME_PLAYED_TOTAL):format((TIME_DAYHOURMINUTESECOND):format(ChatFrame_TimeBreakDown(t.PlayedTotal))))
-    --indicatortip:AddLine((TIME_PLAYED_LEVEL):format((TIME_DAYHOURMINUTESECOND):format(ChatFrame_TimeBreakDown(t.PlayedLevel))))
+  if SI.db.Tooltip.TrackPlayed and t.PlayedTotal and t.PlayedLevel then
     indicatortip:AddLine((TIME_PLAYED_TOTAL):format(""), SecondsToTime(t.PlayedTotal))
     indicatortip:AddLine((TIME_PLAYED_LEVEL):format(""), SecondsToTime(t.PlayedLevel))
   end
@@ -2846,7 +2847,7 @@ local function doExplicitReset(instancemsg, failed)
     if SI.db.Tooltip.ReportResets then
       local msg = instancemsg or RESET_INSTANCES
       msg = msg:gsub("\1241.+;.+;", "") -- ticket 76, remove |1;; escapes on koKR
-      SendChatMessage("<" .. "SavedInstances" .. "> " .. msg, reportchan)
+      C_ChatInfo.SendChatMessage("<" .. "SavedInstances" .. "> " .. msg, reportchan)
     end
   end
 end
@@ -3386,10 +3387,10 @@ local function ChatLink(self, link, button)
   if not link then
     return
   end
-  if ChatEdit_GetActiveWindow() then
-    ChatEdit_InsertLink(link)
+  if ChatFrameUtil.GetActiveWindow() then
+    ChatFrameUtil.InsertLink(link)
   else
-    ChatFrame_OpenChat(link, DEFAULT_CHAT_FRAME)
+    ChatFrameUtil.OpenChat(link, DEFAULT_CHAT_FRAME)
   end
 end
 
